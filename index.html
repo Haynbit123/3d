@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 3D Model Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+        }
+        #download {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI 3D Model Generator</h1>
+    <input id="prompt" type="text" placeholder="Enter your prompt (e.g., 'A futuristic car')" />
+    <button id="generate">Generate 3D Model</button>
+    <a id="download" href="#" download="3d_model.glb">Download Model</a>
+
+    <script>
+        document.getElementById('generate').addEventListener('click', async () => {
+            const prompt = document.getElementById('prompt').value;
+            if (!prompt) return alert('Please enter a prompt!');
+
+            const generateButton = document.getElementById('generate');
+            const downloadLink = document.getElementById('download');
+
+            generateButton.disabled = true;
+            generateButton.textContent = 'Generating...';
+
+            try {
+                // Replace with the actual API endpoint you're using
+                const response = await fetch('https://api.openai.com/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', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt }),
+                });
+
+                const data = await response.json();
+                if (data.modelUrl) {
+                    downloadLink.href = data.modelUrl; // Use returned file URL
+                    downloadLink.style.display = 'block';
+                    alert('Model generated! Click "Download Model" to download.');
+                } else {
+                    alert('Failed to generate the model.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred. Check the console for details.');
+            } finally {
+                generateButton.disabled = false;
+                generateButton.textContent = 'Generate 3D Model';
+            }
+        });
+    </script>
+</body>
+</html>
